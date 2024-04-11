@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="index.js"></script>
+    <title>Main Page</title>
+</head>
+<body>
+    <div class="container">
+        <div id="userArea">
+            <p id = "userWelcome"></p>
+            <!-- User area will show user_name after login -->
+        </div>
+        <div id="subscriptionArea">
+            <ul id="musicList"></ul>
+            <!-- Subscription area will show subscribed music information -->
+        </div>
+        <div id="queryArea">
+            <!-- Query area contains text areas for Title, Year, and Artist -->
+            <textarea id="title" placeholder="Title"></textarea><br>
+            <textarea id="year" placeholder="Year"></textarea><br>
+            <textarea id="artist" placeholder="Artist"></textarea><br>
+            <button onclick="query()">Query</button>
+        </div>
+        <a href="Login.html">Logout</a>
+    </div>
+</body>
+</html>
