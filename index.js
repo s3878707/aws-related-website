@@ -51,22 +51,43 @@ function displayMusics() {
              // Clear previous content
              musicListContainer.innerHTML = '';
 
-             // Loop through each music item in the data and create <li> elements
-             musicData.forEach(function(music) {
-                 var listItem = document.createElement("li");
-                 listItem.innerHTML = "Title: " + music.title + "<br>" +
-                                      "Artist: " + music.artist + "<br>" +
-                                      "Year: " + music.year;
+             if(musicData.length == 0){
+                var noSubscription = document.createElement("p");
+                noSubscription.innerHTML = "You haven't subscribed any music !";
+                musicListContainer.appendChild(noSubscription);
+            }
+            else {
+                musicData.forEach(function (music) {
+                    var musicItemDiv = document.createElement("div");
+                    
+                    var img = document.createElement("img");
+                    img.src = music.img_url;
+                    musicItemDiv.appendChild(img);
 
-                 // Create remove button
-                 var removeButton = document.createElement("button");
-                 removeButton.textContent = "Remove";
-                 removeButton.addEventListener("click", removeMusic());
-                 // Append the remove button to the <li> element
-                 listItem.appendChild(removeButton);
-                 // Append the <li> element to the <ul>
-                 musicListContainer.appendChild(listItem);
-             });
+                    var titleText = document.createElement("p");
+                    titleText.textContent = "Title: " + music.title;
+                    musicItemDiv.appendChild(titleText);
+
+                    var artistText = document.createElement("p");
+                    artistText.textContent = "Artist: " + music.artist;
+                    musicItemDiv.appendChild(artistText);
+
+                    var yearText = document.createElement("p");
+                    yearText.textContent = "Year: " + music.year;
+                    musicItemDiv.appendChild(yearText);
+
+                    // Create remove button
+                    var removeButton = document.createElement("button");
+                    removeButton.textContent = "Remove";
+                    removeButton.addEventListener("click", function () {
+                        removeMusic(music, musicItemDiv);
+                    });
+                    musicItemDiv.appendChild(removeButton);
+
+                    // Append the <div> element to the container
+                    musicListContainer.appendChild(musicItemDiv);
+                });
+            }
         } else {
             // Handle error if statusCode is not 200
             console.error('Error:', data);
@@ -78,8 +99,33 @@ function displayMusics() {
     });
 }
 
-function removeMusic(){
-
+function removeMusic(data, div){
+    var formData = {
+        title : data.title,
+        artist : data.artist
+    }
+    fetch('https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainDeleteMusic', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    }).then(response => response.json())
+    .then(data => {
+        if (data.statusCode == 200) {
+            // Display the username
+            div.remove();
+            // Redirect or do something upon successful login
+        }
+        else {
+            // Redirect to the login page
+            document.getElementById("userWelcome").innerText = "User not found";
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        document.getElementById("userWelcome").innerText = "An error occurred. Please try again later.";
+    });
 }
 
 window.onload = function() {
