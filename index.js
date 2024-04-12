@@ -265,7 +265,8 @@ function subscribeMusic(music){
             musicItemDiv.appendChild(removeButton);
 
             // Append the <div> element to the container
-            musicListContainer.appendChild(musicItemDiv)
+            musicListContainer.appendChild(musicItemDiv);
+            document.getElementById("noSubsriptionMessage").remove();
 
         } else {
             // Redirect to the login page
@@ -277,13 +278,15 @@ function subscribeMusic(music){
         document.getElementById("registerMessage").innerText = "An error occurred. Please try again later.";
     });
 }
-
-document.getElementById('logoutLink').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent default behavior of the link
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('logoutLink').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default behavior of the link
     // Clear localStorage
-    localStorage.removeItem('email');
+        localStorage.removeItem('email');
+        localStorage.removeItem('password');
     // Redirect to the login page
-    window.location.href = 'Login.html';
+        window.location.href = 'Login.html';
+});
 });
 
 window.onload = function() {
