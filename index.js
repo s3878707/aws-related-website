@@ -58,9 +58,6 @@ function displayMusics() {
              musicListContainer.innerHTML = '';
 
              if(musicData.length == 0){
-                // var noSubscription = document.createElement("p");
-                // noSubscription.innerHTML = "You haven't subscribed any music !";
-                // musicListContainer.appendChild(noSubscription);
                 document.getElementById("noSubsriptionMessage").innerText = "You haven't subscribed any music !";
             }
             else {
@@ -106,10 +103,10 @@ function displayMusics() {
     });
 }
 
-function removeMusic(data, div){
+function removeMusic(music, div){
     var formData = {
-        title : data.title,
-        artist : data.artist
+        title : music.title,
+        email : localStorage.getItem("email")   
     }
     fetch('https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainDeleteMusic', {
         method: 'DELETE',
@@ -120,10 +117,7 @@ function removeMusic(data, div){
     }).then(response => response.json())
     .then(data => {
         if (data.statusCode == 200) {
-            // Display the username
             div.remove();
-            document.getElementById("noSubsriptionMessage").innerText = "You haven't subscribed any music !";
-            // Redirect or do something upon successful login
         }
         else {
             // Redirect to the login page
@@ -194,6 +188,9 @@ function query(){
                     var subscribeButton = document.createElement("button");
                     subscribeButton.textContent = "Subscribe";
                     subscribeButton.addEventListener("click", function () {
+                        if(document.getElementById("noSubsriptionMessage")){
+                            document.getElementById("noSubsriptionMessage").remove;
+                        }
                         subscribeMusic(music);
                     });
                     musicItemDiv.appendChild(subscribeButton);
@@ -266,8 +263,6 @@ function subscribeMusic(music){
 
             // Append the <div> element to the container
             musicListContainer.appendChild(musicItemDiv);
-            document.getElementById("noSubsriptionMessage").remove();
-
         } else {
             // Redirect to the login page
             document.getElementById("subscribeMessage").innerText = "The music already exists.";
