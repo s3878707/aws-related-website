@@ -188,16 +188,13 @@ function query(){
                     var subscribeButton = document.createElement("button");
                     subscribeButton.textContent = "Subscribe";
                     subscribeButton.addEventListener("click", function () {
-                        if(document.getElementById("noSubsriptionMessage")){
-                            document.getElementById("noSubsriptionMessage").remove;
-                        }
                         subscribeMusic(music);
                     });
                     musicItemDiv.appendChild(subscribeButton);
 
                     // Append the <div> element to the container
                     musicListContainer.appendChild(musicItemDiv);
-                    document.getElementById("noSubsriptionMessage").remove;
+                    document.getElementById("noSubsriptionMessage").remove();
                 });
             }
         } 
