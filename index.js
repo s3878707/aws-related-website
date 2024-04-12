@@ -1,3 +1,9 @@
+// Check if 'email' is present in localStorage immediately when the script is executed
+if (!localStorage.getItem('email')) {
+    // If 'email' is not present, redirect to the login page
+    window.location.href = 'Login.html';
+}
+
 function displayUserName() {
     var email_value = localStorage.getItem('email');
     var formData = {
