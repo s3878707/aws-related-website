@@ -52,9 +52,10 @@ function displayMusics() {
              musicListContainer.innerHTML = '';
 
              if(musicData.length == 0){
-                var noSubscription = document.createElement("p");
-                noSubscription.innerHTML = "You haven't subscribed any music !";
-                musicListContainer.appendChild(noSubscription);
+                // var noSubscription = document.createElement("p");
+                // noSubscription.innerHTML = "You haven't subscribed any music !";
+                // musicListContainer.appendChild(noSubscription);
+                document.getElementById("noSubsriptionMessage").innerText = "You haven't subscribed any music !";
             }
             else {
                 musicData.forEach(function (music) {
@@ -115,6 +116,7 @@ function removeMusic(data, div){
         if (data.statusCode == 200) {
             // Display the username
             div.remove();
+            document.getElementById("noSubsriptionMessage").innerText = "You haven't subscribed any music !";
             // Redirect or do something upon successful login
         }
         else {
@@ -192,6 +194,7 @@ function query(){
 
                     // Append the <div> element to the container
                     musicListContainer.appendChild(musicItemDiv);
+                    document.getElementById("noSubsriptionMessage").remove;
                 });
             }
         } 
@@ -205,8 +208,68 @@ function query(){
     });
 }
 
-function subscribeMusic(music){
+function subscribeMusic(music){    
+    var artist = music.artist;
+    var title = music.title;
+    var year = music.year;
+    var email = localStorage.getItem('email');
+    var formData = {
+        email: email,
+        artist: artist,
+        title: title,
+        year : year
+    };
 
+    fetch(' https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainSubscribeMusic', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.statusCode == 200) {
+            document.getElementById("subscribeMessage").innerText = "Subscribe successful!";
+            var musicListContainer = document.getElementById("musicList");
+            var musicItemDiv = document.createElement("div");
+                    
+            var img = document.createElement("img");
+            img.src = music.img_url;
+            musicItemDiv.appendChild(img);
+
+            var titleText = document.createElement("p");
+            titleText.textContent = "Title: " + music.title;
+            musicItemDiv.appendChild(titleText);
+
+            var artistText = document.createElement("p");
+            artistText.textContent = "Artist: " + music.artist;
+            musicItemDiv.appendChild(artistText);
+
+            var yearText = document.createElement("p");
+            yearText.textContent = "Year: " + music.year;
+            musicItemDiv.appendChild(yearText);
+
+            // Create remove button
+            var removeButton = document.createElement("button");
+            removeButton.textContent = "Remove";
+            removeButton.addEventListener("click", function () {
+            removeMusic(music, musicItemDiv);
+            });
+            musicItemDiv.appendChild(removeButton);
+
+            // Append the <div> element to the container
+            musicListContainer.appendChild(musicItemDiv)
+
+        } else {
+            // Redirect to the login page
+            document.getElementById("subscribeMessage").innerText = "The music already exists.";
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        document.getElementById("registerMessage").innerText = "An error occurred. Please try again later.";
+    });
 }
 
 window.onload = function() {
