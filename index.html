@@ -19,10 +19,12 @@
         <div id="queryArea">
             <!-- Query area contains text areas for Title, Year, and Artist -->
             <textarea id="title" placeholder="Title"></textarea><br>
-            <textarea id="year" placeholder="Year"></textarea><br>
+            <input type="number" id="year" placeholder="Year"></input><br>
             <textarea id="artist" placeholder="Artist"></textarea><br>
             <button onclick="query()">Query</button>
+            <ul id="musicQueryList"></ul>
         </div>
+
         <a href="Login.html">Logout</a>
     </div>
 </body>

@@ -128,6 +128,87 @@ function removeMusic(data, div){
     });
 }
 
+function query(){
+    var title = document.getElementById("title").value;
+    var year = document.getElementById("year").value;
+    var artist = document.getElementById("artist").value;
+    if (year !== "") {
+        year = parseInt(year);
+    }
+    var formData = {
+        title : title,
+        year : year,
+        artist : artist
+    };
+    fetch('https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainQueryMusics', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    }).then(response => response.json())
+    .then(data => {
+        if (data.statusCode == 200) {
+            // Parse the JSON body
+            var musicData = data.body;
+
+            // Get the container element where music list will be displayed
+            var musicListContainer = document.getElementById("musicQueryList");
+             // Clear previous content
+             musicListContainer.innerHTML = '';
+
+             if(musicData.length == 0){
+                var noSubscription = document.createElement("p");
+                noSubscription.innerHTML = "No result is retrieved. Please query again";
+                musicListContainer.appendChild(noSubscription);
+            }
+            else {
+                musicData.forEach(function (music) {
+                    var musicItemDiv = document.createElement("div");
+                    
+                    var img = document.createElement("img");
+                    img.src = music.img_url;
+                    musicItemDiv.appendChild(img);
+
+                    var titleText = document.createElement("p");
+                    titleText.textContent = "Title: " + music.title;
+                    musicItemDiv.appendChild(titleText);
+
+                    var artistText = document.createElement("p");
+                    artistText.textContent = "Artist: " + music.artist;
+                    musicItemDiv.appendChild(artistText);
+
+                    var yearText = document.createElement("p");
+                    yearText.textContent = "Year: " + music.year;
+                    musicItemDiv.appendChild(yearText);
+
+                    // Create remove button
+                    var subscribeButton = document.createElement("button");
+                    subscribeButton.textContent = "Subscribe";
+                    subscribeButton.addEventListener("click", function () {
+                        subscribeMusic(music);
+                    });
+                    musicItemDiv.appendChild(subscribeButton);
+
+                    // Append the <div> element to the container
+                    musicListContainer.appendChild(musicItemDiv);
+                });
+            }
+        } 
+            else {
+                document.getElementById("loginMessage").innerText = "Login failed. Please try again.";
+            }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        document.getElementById("loginMessage").innerText = "An error occurred. Please try again later.";
+    });
+}
+
+function subscribeMusic(music){
+
+}
+
 window.onload = function() {
     displayUserName();
     displayMusics();
