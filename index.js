@@ -30,11 +30,16 @@ function displayUserName() {
 }
 
 function displayMusics() {
+    var email_value = localStorage.getItem('email');
+    var formData = {
+        email : email_value
+    }
     fetch('https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainDisplayMusics', {
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
+        body: JSON.stringify(formData),
     }).then(response => response.json())
     .then(data => {
         if (data.statusCode == 200) {
@@ -56,12 +61,7 @@ function displayMusics() {
                  // Create remove button
                  var removeButton = document.createElement("button");
                  removeButton.textContent = "Remove";
-                 removeButton.addEventListener("click", function() {
-                     // Remove the corresponding <li> element when the button is clicked
-                    //  musicListContainer.removeChild(listItem);
-                     // Optionally, you can also send a request to remove the item from the backend
-                     // based on its ID or some other identifier
-                 });
+                 removeButton.addEventListener("click", removeMusic());
                  // Append the remove button to the <li> element
                  listItem.appendChild(removeButton);
                  // Append the <li> element to the <ul>
@@ -78,6 +78,9 @@ function displayMusics() {
     });
 }
 
+function removeMusic(){
+
+}
 
 window.onload = function() {
     displayUserName();
