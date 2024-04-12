@@ -272,6 +272,14 @@ function subscribeMusic(music){
     });
 }
 
+document.getElementById('logoutLink').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default behavior of the link
+    // Clear localStorage
+    localStorage.removeItem('email');
+    // Redirect to the login page
+    window.location.href = 'Login.html';
+});
+
 window.onload = function() {
     displayUserName();
     displayMusics();
