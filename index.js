@@ -1,112 +1,115 @@
-// Check if 'email' is present in localStorage immediately when the script is executed
-if (!localStorage.getItem('email')) {
-    // If 'email' is not present, redirect to the login page
-    window.location.href = 'Login.html';
-}
-
 function displayUserName() {
-    var email_value = localStorage.getItem('email');
-    var formData = {
-        email : email_value
+    if (localStorage.getItem('email')) {
+        var email_value = localStorage.getItem('email');
+        var formData = {
+            email: email_value
+        }
+        fetch(' https://la82n6dwa7.execute-api.us-east-1.amazonaws.com/Production/main-display-username', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        }).then(response => response.json())
+            .then(data => {
+                if (data.statusCode == 200) {
+                    var userData = JSON.parse(data.body);
+                    var username = userData.user_name;
+                    // Display the username
+                    document.getElementById("userWelcome").innerText = "Welcome, " + username;
+                    // Redirect or do something upon successful login
+                }
+                else {
+                    // Redirect to the login page
+                    document.getElementById("userWelcome").innerText = "User not found";
+                    window.location.href = "Login.js";
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
-    fetch(' https://la82n6dwa7.execute-api.us-east-1.amazonaws.com/Production/main-display-username', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-    }).then(response => response.json())
-    .then(data => {
-        if (data.statusCode == 200) {
-            var userData = JSON.parse(data.body);
-            var username = userData.user_name;
-            // Display the username
-            document.getElementById("userWelcome").innerText = "Welcome, " + username;
-            // Redirect or do something upon successful login
-        }
-        else {
-            // Redirect to the login page
-            document.getElementById("userWelcome").innerText = "User not found";
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        document.getElementById("userWelcome").innerText = "An error occurred. Please try again later.";
-    });
+    else {
+        document.getElementById("userWelcome").innerText = "You are using website as Guest";
+    }
 }
 
 function displayMusics() {
-    var email_value = localStorage.getItem('email');
-    var formData = {
-        email : email_value
-    }
-    fetch('https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainDisplayMusics', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-    }).then(response => response.json())
-    .then(data => {
-        if (data.statusCode == 200) {
-            // Parse the JSON body
-            var musicData = data.body;
-
-            // Get the container element where music list will be displayed
-            var musicListContainer = document.getElementById("musicList");
-             // Clear previous content
-             musicListContainer.innerHTML = '';
-
-             if(musicData.length == 0){
-                document.getElementById("noSubsriptionMessage").innerText = "You haven't subscribed any music !";
-            }
-            else {
-                musicData.forEach(function (music) {
-                    var musicItemDiv = document.createElement("div");
-                    
-                    var img = document.createElement("img");
-                    img.src = music.img_url;
-                    musicItemDiv.appendChild(img);
-
-                    var titleText = document.createElement("p");
-                    titleText.textContent = "Title: " + music.title;
-                    musicItemDiv.appendChild(titleText);
-
-                    var artistText = document.createElement("p");
-                    artistText.textContent = "Artist: " + music.artist;
-                    musicItemDiv.appendChild(artistText);
-
-                    var yearText = document.createElement("p");
-                    yearText.textContent = "Year: " + music.year;
-                    musicItemDiv.appendChild(yearText);
-
-                    // Create remove button
-                    var removeButton = document.createElement("button");
-                    removeButton.textContent = "Remove";
-                    removeButton.addEventListener("click", function () {
-                        removeMusic(music, musicItemDiv);
-                    });
-                    musicItemDiv.appendChild(removeButton);
-
-                    // Append the <div> element to the container
-                    musicListContainer.appendChild(musicItemDiv);
-                });
-            }
-        } else {
-            // Handle error if statusCode is not 200
-            console.error('Error:', data);
+    if (localStorage.getItem('email')) {
+        var email_value = localStorage.getItem('email');
+        var formData = {
+            email: email_value
         }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        // Handle error if fetch fails
-    });
+        fetch('https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainDisplayMusics', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        }).then(response => response.json())
+            .then(data => {
+                if (data.statusCode == 200) {
+                    // Parse the JSON body
+                    var musicData = data.body;
+
+                    // Get the container element where music list will be displayed
+                    var musicListContainer = document.getElementById("musicList");
+                    // Clear previous content
+                    musicListContainer.innerHTML = '';
+
+                    if (musicData.length == 0) {
+                        document.getElementById("noSubsriptionMessage").innerText = "You haven't subscribed any music !";
+                    }
+                    else {
+                        musicData.forEach(function (music) {
+                            var musicItemDiv = document.createElement("div");
+
+                            var img = document.createElement("img");
+                            img.src = music.img_url;
+                            musicItemDiv.appendChild(img);
+
+                            var titleText = document.createElement("p");
+                            titleText.textContent = "Title: " + music.title;
+                            musicItemDiv.appendChild(titleText);
+
+                            var artistText = document.createElement("p");
+                            artistText.textContent = "Artist: " + music.artist;
+                            musicItemDiv.appendChild(artistText);
+
+                            var yearText = document.createElement("p");
+                            yearText.textContent = "Year: " + music.year;
+                            musicItemDiv.appendChild(yearText);
+
+                            // Create remove button
+                            var removeButton = document.createElement("button");
+                            removeButton.textContent = "Remove";
+                            removeButton.addEventListener("click", function () {
+                                removeMusic(music, musicItemDiv);
+                            });
+                            musicItemDiv.appendChild(removeButton);
+
+                            // Append the <div> element to the container
+                            musicListContainer.appendChild(musicItemDiv);
+                        });
+                    }
+                } else {
+                    // Handle error if statusCode is not 200
+                    console.error('Error:', data);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Handle error if fetch fails
+            });
+    } else {
+        document.getElementById("noSubsriptionMessage").innerText = "Please log in to view this area !";
+    }
 }
 
-function removeMusic(music, div){
+function removeMusic(music, div) {
     var formData = {
-        title : music.title,
-        email : localStorage.getItem("email")   
+        title: music.title,
+        email: localStorage.getItem("email")
     }
     fetch('https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainDeleteMusic', {
         method: 'DELETE',
@@ -115,22 +118,18 @@ function removeMusic(music, div){
         },
         body: JSON.stringify(formData),
     }).then(response => response.json())
-    .then(data => {
-        if (data.statusCode == 200) {
-            div.remove();
-        }
-        else {
-            // Redirect to the login page
-            document.getElementById("userWelcome").innerText = "User not found";
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        document.getElementById("userWelcome").innerText = "An error occurred. Please try again later.";
-    });
+        .then(data => {
+            if (data.statusCode == 200) {
+                div.remove();
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            document.getElementById("userWelcome").innerText = "An error occurred. Please try again later.";
+        });
 }
 
-function query(){
+function query() {
     var title = document.getElementById("title").value;
     var year = document.getElementById("year").value;
     var artist = document.getElementById("artist").value;
@@ -138,9 +137,9 @@ function query(){
         year = parseInt(year);
     }
     var formData = {
-        title : title,
-        year : year,
-        artist : artist
+        title: title,
+        year: year,
+        artist: artist
     };
     fetch('https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainQueryMusics', {
         method: 'POST',
@@ -149,66 +148,65 @@ function query(){
         },
         body: JSON.stringify(formData),
     }).then(response => response.json())
-    .then(data => {
-        if (data.statusCode == 200) {
-            // Parse the JSON body
-            var musicData = data.body;
+        .then(data => {
+            if (data.statusCode == 200) {
+                // Parse the JSON body
+                var musicData = data.body;
 
-            // Get the container element where music list will be displayed
-            var musicListContainer = document.getElementById("musicQueryList");
-             // Clear previous content
-             musicListContainer.innerHTML = '';
+                // Get the container element where music list will be displayed
+                var musicListContainer = document.getElementById("musicQueryList");
+                // Clear previous content
+                musicListContainer.innerHTML = '';
 
-             if(musicData.length == 0){
-                var noSubscription = document.createElement("p");
-                noSubscription.innerHTML = "No result is retrieved. Please query again";
-                musicListContainer.appendChild(noSubscription);
-            }
-            else {
-                musicData.forEach(function (music) {
-                    var musicItemDiv = document.createElement("div");
-                    
-                    var img = document.createElement("img");
-                    img.src = music.img_url;
-                    musicItemDiv.appendChild(img);
+                if (musicData.length == 0) {
+                    var noSubscription = document.createElement("p");
+                    noSubscription.innerHTML = "No result is retrieved. Please query again";
+                    musicListContainer.appendChild(noSubscription);
+                }
+                else {
+                    musicData.forEach(function (music) {
+                        var musicItemDiv = document.createElement("div");
 
-                    var titleText = document.createElement("p");
-                    titleText.textContent = "Title: " + music.title;
-                    musicItemDiv.appendChild(titleText);
+                        var img = document.createElement("img");
+                        img.src = music.img_url;
+                        musicItemDiv.appendChild(img);
 
-                    var artistText = document.createElement("p");
-                    artistText.textContent = "Artist: " + music.artist;
-                    musicItemDiv.appendChild(artistText);
+                        var titleText = document.createElement("p");
+                        titleText.textContent = "Title: " + music.title;
+                        musicItemDiv.appendChild(titleText);
 
-                    var yearText = document.createElement("p");
-                    yearText.textContent = "Year: " + music.year;
-                    musicItemDiv.appendChild(yearText);
+                        var artistText = document.createElement("p");
+                        artistText.textContent = "Artist: " + music.artist;
+                        musicItemDiv.appendChild(artistText);
 
-                    // Create remove button
-                    var subscribeButton = document.createElement("button");
-                    subscribeButton.textContent = "Subscribe";
-                    subscribeButton.addEventListener("click", function () {
-                        subscribeMusic(music);
+                        var yearText = document.createElement("p");
+                        yearText.textContent = "Year: " + music.year;
+                        musicItemDiv.appendChild(yearText);
+
+                        // Create remove button
+                        if (localStorage.getItem('email')) {
+                            var subscribeButton = document.createElement("button");
+                            subscribeButton.textContent = "Subscribe";
+                            subscribeButton.addEventListener("click", function () {
+                                subscribeMusic(music);
+                            });
+                            musicItemDiv.appendChild(subscribeButton);
+                        }
+                        // Append the <div> element to the container
+                        musicListContainer.appendChild(musicItemDiv);
                     });
-                    musicItemDiv.appendChild(subscribeButton);
-
-                    // Append the <div> element to the container
-                    musicListContainer.appendChild(musicItemDiv);
-                    document.getElementById("noSubsriptionMessage").remove();
-                });
+                }
             }
-        } 
             else {
-                document.getElementById("loginMessage").innerText = "Login failed. Please try again.";
+                document.getElementById("subscribeMessage").innerText = "No result is retrieved. Please query again";
             }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        document.getElementById("loginMessage").innerText = "An error occurred. Please try again later.";
-    });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }
 
-function subscribeMusic(music){    
+function subscribeMusic(music) {
     var artist = music.artist;
     var title = music.title;
     var year = music.year;
@@ -217,7 +215,7 @@ function subscribeMusic(music){
         email: email,
         artist: artist,
         title: title,
-        year : year
+        year: year
     };
 
     fetch(' https://1higvw6f6l.execute-api.us-east-1.amazonaws.com/Production/MainSubscribeMusic', {
@@ -227,61 +225,71 @@ function subscribeMusic(music){
         },
         body: JSON.stringify(formData),
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.statusCode == 200) {
-            document.getElementById("subscribeMessage").innerText = "Subscribe successful!";
-            var musicListContainer = document.getElementById("musicList");
-            var musicItemDiv = document.createElement("div");
-                    
-            var img = document.createElement("img");
-            img.src = music.img_url;
-            musicItemDiv.appendChild(img);
+        .then(response => response.json())
+        .then(data => {
+            if (data.statusCode == 200) {
+                document.getElementById("subscribeMessage").innerText = "Subscribe successful!";
+                var musicListContainer = document.getElementById("musicList");
+                var musicItemDiv = document.createElement("div");
 
-            var titleText = document.createElement("p");
-            titleText.textContent = "Title: " + music.title;
-            musicItemDiv.appendChild(titleText);
+                var img = document.createElement("img");
+                img.src = music.img_url;
+                musicItemDiv.appendChild(img);
 
-            var artistText = document.createElement("p");
-            artistText.textContent = "Artist: " + music.artist;
-            musicItemDiv.appendChild(artistText);
+                var titleText = document.createElement("p");
+                titleText.textContent = "Title: " + music.title;
+                musicItemDiv.appendChild(titleText);
 
-            var yearText = document.createElement("p");
-            yearText.textContent = "Year: " + music.year;
-            musicItemDiv.appendChild(yearText);
+                var artistText = document.createElement("p");
+                artistText.textContent = "Artist: " + music.artist;
+                musicItemDiv.appendChild(artistText);
 
-            // Create remove button
-            var removeButton = document.createElement("button");
-            removeButton.textContent = "Remove";
-            removeButton.addEventListener("click", function () {
-            removeMusic(music, musicItemDiv);
-            });
-            musicItemDiv.appendChild(removeButton);
+                var yearText = document.createElement("p");
+                yearText.textContent = "Year: " + music.year;
+                musicItemDiv.appendChild(yearText);
 
-            // Append the <div> element to the container
-            musicListContainer.appendChild(musicItemDiv);
-        } else {
-            // Redirect to the login page
-            document.getElementById("subscribeMessage").innerText = "The music already exists.";
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        document.getElementById("registerMessage").innerText = "An error occurred. Please try again later.";
-    });
+                // Create remove button
+                var removeButton = document.createElement("button");
+                removeButton.textContent = "Remove";
+                removeButton.addEventListener("click", function () {
+                    removeMusic(music, musicItemDiv);
+                });
+                musicItemDiv.appendChild(removeButton);
+
+                // Append the <div> element to the container
+                musicListContainer.appendChild(musicItemDiv);
+            } else {
+                // Redirect to the login page
+                document.getElementById("subscribeMessage").innerText = "You already subsribed this song";
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('logoutLink').addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent default behavior of the link
-    // Clear localStorage
-        localStorage.removeItem('email');
-        localStorage.removeItem('password');
-    // Redirect to the login page
-        window.location.href = 'Login.html';
-});
+document.addEventListener('DOMContentLoaded', function () {
+    if (localStorage.getItem("email")) {
+        document.getElementById('logoutLink').innerText = "Log out";
+        document.getElementById('logoutLink').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default behavior of the link
+            // Clear localStorage
+            localStorage.removeItem('email');
+            localStorage.removeItem('password');
+            // Redirect to the login page
+            window.location.href = 'Login.html';
+        });
+    }
+    else {
+        document.getElementById('logoutLink').innerText = "Log in";
+        document.getElementById('logoutLink').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default behavior of the link
+            // Redirect to the login page
+            window.location.href = 'Login.html';
+        });
+    }
 });
 
-window.onload = function() {
+window.onload = function () {
     displayUserName();
     displayMusics();
 }
