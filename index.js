@@ -159,9 +159,7 @@ function query() {
                 musicListContainer.innerHTML = '';
 
                 if (musicData.length == 0) {
-                    var noSubscription = document.createElement("p");
-                    noSubscription.innerHTML = "No result is retrieved. Please query again";
-                    musicListContainer.appendChild(noSubscription);
+                    document.getElementById("subscribeMessage").innerHTML = "No result is retrieved. Please query again";
                 }
                 else {
                     musicData.forEach(function (music) {
@@ -198,7 +196,7 @@ function query() {
                 }
             }
             else {
-                document.getElementById("subscribeMessage").innerText = "No result is retrieved. Please query again";
+                document.getElementById("subscribeMessage").innerHTML = "No result is retrieved. Please query again";
             }
         })
         .catch((error) => {
@@ -228,7 +226,7 @@ function subscribeMusic(music) {
         .then(response => response.json())
         .then(data => {
             if (data.statusCode == 200) {
-                document.getElementById("subscribeMessage").innerText = "Subscribe successful!";
+                document.getElementById("subscribeMessage").innerHTML = "Subscribe successful!";
                 var musicListContainer = document.getElementById("musicList");
                 var musicItemDiv = document.createElement("div");
 
@@ -260,7 +258,7 @@ function subscribeMusic(music) {
                 musicListContainer.appendChild(musicItemDiv);
             } else {
                 // Redirect to the login page
-                document.getElementById("subscribeMessage").innerText = "You already subsribed this song";
+                document.getElementById("subscribeMessage").innerHTML = "You already subsribed this song";
             }
         })
         .catch((error) => {
