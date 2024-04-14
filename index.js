@@ -84,6 +84,9 @@ function displayMusics() {
                             var removeButton = document.createElement("button");
                             removeButton.textContent = "Remove";
                             removeButton.addEventListener("click", function () {
+                                if (musicData.length == 0) {
+                                    document.getElementById("noSubsriptionMessage").innerText = "You haven't subscribed any music !";
+                                }
                                 removeMusic(music, musicItemDiv);
                             });
                             musicItemDiv.appendChild(removeButton);
