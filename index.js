@@ -193,6 +193,7 @@ function query() {
                         // Append the <div> element to the container
                         musicListContainer.appendChild(musicItemDiv);
                     });
+                    document.getElementById("subscribeMessage").innerHTML = "";
                 }
             }
             else {
@@ -253,9 +254,9 @@ function subscribeMusic(music) {
                     removeMusic(music, musicItemDiv);
                 });
                 musicItemDiv.appendChild(removeButton);
-
                 // Append the <div> element to the container
                 musicListContainer.appendChild(musicItemDiv);
+                document.getElementById("noSubsriptionMessage").innerText = "";
             } else {
                 // Redirect to the login page
                 document.getElementById("subscribeMessage").innerHTML = "You already subsribed this song";
