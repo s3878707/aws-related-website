@@ -13,8 +13,7 @@ function displayUserName() {
         }).then(response => response.json())
             .then(data => {
                 if (data.statusCode == 200) {
-                    var userData = JSON.parse(data.body);
-                    var username = userData.user_name;
+                    var username = data.body.user_name;
                     // Display the username
                     document.getElementById("userWelcome").innerText = "Welcome, " + username;
                     // Redirect or do something upon successful login
