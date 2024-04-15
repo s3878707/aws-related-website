@@ -25,7 +25,7 @@ function submitForm(event) {
             // Redirect or do something upon successful login
         } 
             else {
-                document.getElementById("loginMessage").innerText = "Login failed. Please try again.";
+                document.getElementById("loginMessage").innerText = "email or password is invalid";
             }
     })
     .catch((error) => {
